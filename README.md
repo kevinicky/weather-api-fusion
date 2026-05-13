@@ -76,52 +76,6 @@ weighted_temp = Σ(provider_temp × provider_weight) / Σ(weights)
 confidence = 1 - (stdDev(temps) / maxDiff)
 ```
 
-### Adding a New Provider
-
-1. Create `src/services/newProvider.js` extending `WeatherProvider`:
-
-```javascript
-import { WeatherProvider } from './weatherProvider.js';
-
-export class NewProvider extends WeatherProvider {
-  constructor() {
-    super('newProvider');
-  }
-
-  isEnabled() {
-    return config.featureFlags.newProvider;
-  }
-
-  async getCurrentWeather(lat, lon) {
-    // Return: { temp, humidity, windSpeed, precipitation, description }
-  }
-
-  async getForecast(lat, lon, days) {
-    // Return array of: { date, tempMax, tempMin, precipitation, windSpeed, description }
-  }
-}
-```
-
-2. Register in `src/services/weatherStrategy.js`:
-
-```javascript
-import { NewProvider } from './newProvider.js';
-
-this.providers = [
-  new OpenMeteoProvider(),
-  new OpenWeatherProvider(),
-  new WeatherApiProvider(),
-  new NewProvider()  // Add here
-];
-```
-
-3. Add feature flag in `.env`:
-
-```
-ENABLE_NEW_PROVIDER=true
-WEIGHT_NEW_PROVIDER=0.25
-```
-
 ## Feature Flags
 
 Toggle providers on/off without code changes:
